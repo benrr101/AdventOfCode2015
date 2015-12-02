@@ -14,11 +14,13 @@ namespace Day1
 
             // Set up the counter
             int floor = 0;
+            bool hasEnteredBasement = false;
             Console.WriteLine("Starting at 0");
             
             // Start reading the floors
-            foreach (char c in input)
+            for(int i = 0; i < input.Length; i++)
             {
+                char c = input[i];
                 switch (c)
                 {
                     case '(':
@@ -27,6 +29,12 @@ namespace Day1
                         break;
                     case ')':
                         floor--;
+                        if (floor < 0 && !hasEnteredBasement)
+                        {
+                            hasEnteredBasement = true;
+                            Console.WriteLine("First entered basement at character pos: {0}", i + 1);
+                            Console.ReadLine();
+                        }
                         Console.WriteLine("Going down to {0}", floor);
                         break;
                     default:
