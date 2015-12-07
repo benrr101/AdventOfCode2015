@@ -25,7 +25,8 @@ namespace Day2
 
             // Build a regular expression to match the line
             Regex dimensionsRegex = new Regex(@"(\d+)x(\d+)x(\d+)", RegexOptions.Compiled);
-            long totalSqFt = 0;
+            long wrappingPaper = 0;
+            long ribbon = 0;
 
             foreach (string line in inputLines)
             {
@@ -36,25 +37,36 @@ namespace Day2
                     Console.WriteLine("Invalid line '{0}'", line);
                     continue;
                 }
-                int d1 = Int32.Parse(dimensionsMatch.Groups[1].Value);
-                int d2 = Int32.Parse(dimensionsMatch.Groups[2].Value);
-                int d3 = Int32.Parse(dimensionsMatch.Groups[3].Value);
+                List<int> dimensions = new List<int>
+                {
+                    Int32.Parse(dimensionsMatch.Groups[1].Value),
+                    Int32.Parse(dimensionsMatch.Groups[2].Value),
+                    Int32.Parse(dimensionsMatch.Groups[3].Value)
+                };
+                dimensions.Sort();
 
                 // Calculate the square footage of the faces
-                int f1 = d1*d2;
-                int f2 = d2*d3;
-                int f3 = d1*d3;
+                int f1 = dimensions[0]*dimensions[1];
+                int f2 = dimensions[1]*dimensions[2];
+                int f3 = dimensions[0]*dimensions[2];
 
-                // Find the minimum of the faces
-                int minFace = Math.Min(Math.Min(f1, f2), f3);
+                // Minimum face will always be f1 since the dimensions are sorted
+                // Calculate min face's perimeter
+                int minFacePerimeter = (dimensions[0]*2) + (dimensions[1]*2);
+                int volume = dimensions[0]*dimensions[1]*dimensions[2];
 
                 // Add the totals up for this package
-                totalSqFt += (2*f1) + (2*f2) + (2*f3) + minFace;
-                Console.WriteLine("(2*{0}) + (2*{1}) + (2*{2}) + {3}", f1, f2, f3, minFace);
+                wrappingPaper += (2*f1) + (2*f2) + (2*f3) + f1;
+                ribbon += minFacePerimeter + volume;
+
+                Console.WriteLine("--- {0}x{1}x{2}", dimensions[0], dimensions[1], dimensions[2]);
+                Console.WriteLine("Wrapping: (2*{0}) + (2*{1}) + (2*{2}) + {3}", f1, f2, f3, f1);
+                Console.WriteLine("Ribbon: {0}*2 + {1}*2 + {2}", dimensions[0], dimensions[1], volume);
             }
 
             Console.WriteLine("---------------------------");
-            Console.WriteLine("Final SqFt: {0}", totalSqFt);
+            Console.WriteLine("Final Wrapping Paper SqFf: {0}", wrappingPaper);
+            Console.WriteLine("Final Ribbon Length: {0}", ribbon);
             Console.ReadLine();
         }
     }
